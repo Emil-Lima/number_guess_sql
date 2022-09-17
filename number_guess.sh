@@ -11,14 +11,28 @@ PLAY_ROUND() {
   echo "The number is $NUMBER_TO_GUESS"
   read USER_NUMBER
   ATTEMPTS=$((ATTEMPTS+1))
+  CHECK_NUMBER $USER_NUMBER
 }
 
 CHECK_NUMBER() {
-  if [[ $1 != $NUMBER_TO_GUESS ]]
+  if [[ ! $1 =~ ^[0-9]+$ ]]
   then
-    echo "Not good"
+    echo "That is not an integer, guess again:"
+    PLAY_ROUND
   else
-    echo "Yay"
+    if [[ $1 = $NUMBER_TO_GUESS ]]
+    then
+      echo "Yay"
+    else
+      if [[ $1 -gt $NUMBER_TO_GUESS ]]
+      then
+        echo "It's lower than that, guess again:"
+        PLAY_ROUND
+      else
+        echo "It's higher than that, guess again:"
+        PLAY_ROUND
+      fi
+    fi
   fi
 }
 
@@ -26,7 +40,6 @@ PLAY_GAME() {
   ADD_NUMBER_TO_GUESS
   ATTEMPTS=0
   PLAY_ROUND
-  CHECK_NUMBER $USER_NUMBER
 }
 
 echo "Enter your username:"
